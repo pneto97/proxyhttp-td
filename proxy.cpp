@@ -249,7 +249,7 @@ int main(int argc, char *argv[]){
             recvBuf[received] = '\0';
             reply.append(recvBuf);
          //   fputs(recvBuf,stdout);
-            //sendDataChar(recvBuf, received,newsockfd );
+            sendDataChar(recvBuf, received,newsockfd );
             memset(recvBuf, 0 , sizeof(recvBuf));
         }
 
@@ -261,7 +261,7 @@ int main(int argc, char *argv[]){
         //cout << reply;
         
         //sendDataChar(char* data, int size, int sock){
-        sendData(reply,newsockfd);
+       // sendData(reply,newsockfd);
 
         cout << endl;
         
