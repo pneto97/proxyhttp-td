@@ -1,0 +1,2 @@
+#define HTTP_OK_MSG	"HTTP/1.1 200 OK\r\n\r\n"
+#define MAX_BUFFER_SIZE 10000

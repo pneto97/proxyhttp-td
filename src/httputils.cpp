@@ -1,10 +1,10 @@
-#include "httputils.h"
+#include "httputils.hpp"
 
-Request::Request(string req){
+Request::Request(std::string req){
     this->req = req; 
 
-    stringstream s(req);
-    string word;
+    std::stringstream s(req);
+    std::string word;
 
     s >> word;
     this->method = word;
@@ -22,18 +22,18 @@ Request::Request(string req){
         }
     }
 }
-string Request::getUri(){
+std::string Request::getUri(){
     return this->uri;
 }
-string Request::getVersion(){
+std::string Request::getVersion(){
     return this->version;
 }
-string Request::getMethod(){
+std::string Request::getMethod(){
     return this->method;
 }
-string Request::getHost(){
+std::string Request::getHost(){
     return this->host;
 }
-string Request::getRequest(){
+std::string Request::getRequest(){
     return this->req;
 }
