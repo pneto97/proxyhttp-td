@@ -31,11 +31,9 @@ int initServerSocket(string host){
     
     if (getaddrinfo(host.c_str(), port, &hints, &res) != 0) {
     //if (getaddrinfo("linuxhowtos.org", porta, &hints, &res) != 0) {
-        fprintf (stderr," Erro no formato do endereco do servidor! \n");
+        std::cerr << " Erro no formato do endereco do servidor! \n" << std::endl;
         exit (1);
     }
-    
-    
     
     if ((serverFd = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) < 0) {
         fprintf (stderr," Erro ao criar socket para o servidor! \n");
@@ -52,6 +50,8 @@ int initServerSocket(string host){
     
     return serverFd;
 }
+
+
 int sendData(string data, int sock){
 
         int sendSize = data.size();
@@ -59,7 +59,7 @@ int sendData(string data, int sock){
         //char sendBuf[MAX_BUFFER_SIZE];
         char* sendBuf = (char*) malloc((sendSize+1)*sizeof(char)); 
         memset(sendBuf, 0 , sizeof(sendBuf));
-        strcpy(sendBuf,data.c_str());
+        strcpy(sendBuf, data.c_str());
         
         //string a(sendBuf);
         //cout << a << endl;
@@ -67,7 +67,9 @@ int sendData(string data, int sock){
             int sent = 0;
             if((sent = send(sock, (void*) (sendBuf + sentTotal), sendSize - sentTotal,0)) <0){
                 
-                fprintf(stderr,"Erro ao enviar ao servidor!\n");
+                std::cerr << "Erro ao enviar ao servidor!\nFechando Socket" << std::endl;
+                close(sock);
+                free(sendBuf);
                 exit(1);
             }
 

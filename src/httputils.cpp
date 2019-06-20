@@ -22,18 +22,23 @@ Request::Request(std::string req){
         }
     }
 }
+
 std::string Request::getUri(){
     return this->uri;
 }
+
 std::string Request::getVersion(){
     return this->version;
 }
+
 std::string Request::getMethod(){
     return this->method;
 }
+
 std::string Request::getHost(){
     return this->host;
 }
+
 std::string Request::getRequest(){
     return this->req;
 }
