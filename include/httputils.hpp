@@ -20,6 +20,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "constants.hpp"
+
 int initServerSocket(std::string host);
 
 int sendData(std::string data, int sock);

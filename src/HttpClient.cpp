@@ -9,12 +9,20 @@ HttpClient::~HttpClient()
 }
 
 int HttpClient::makeRequest( Request reques, Response resp, bool verbose = false ) {
-    int sockfd, clientsockfd;
+    int sockfd, clientsockfd, serverFd;
     int opt = 1;
     char buffer[MAX_BUFFER_SIZE];
 
     // Abrir socket para realizar a requisicao
-    int serverFd = initServerSocket(reques.getHost());
+    try
+    {
+        serverFd = initServerSocket(reques.getHost());
+    }
+    catch( char const *e )
+    {
+        std::cerr << e << '\n';
+        return VALOR_RETORNO::ERROR;
+    }
 
     // Enviar requisicao ao servidor
     sendData(reques.getRequest(), serverFd);

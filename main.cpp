@@ -5,7 +5,7 @@
 int main(int argc, char *argv[]){
 
     std::string req = "GET / HTTP/1.1\r\n";
-    req += "Host: www.pudim.com.br\r\n";
+    req += "Host: www.indexof123.com\r\n";
     req += "Connection: keep-alive\r\n";
     req += "Upgrade-Insecure-Requests: 1\r\n";
     req += "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36\r\n";

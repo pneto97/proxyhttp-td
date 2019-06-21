@@ -28,21 +28,21 @@ int initServerSocket(string host){
     memset(&hints,0,sizeof(hints));
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
+
     
     if (getaddrinfo(host.c_str(), port, &hints, &res) != 0) {
     //if (getaddrinfo("linuxhowtos.org", porta, &hints, &res) != 0) {
-        std::cerr << " Erro no formato do endereco do servidor! \n" << std::endl;
-        exit (1);
+        throw "Erro ao tentar buscar informações sobre o servidor!";
     }
     
     if ((serverFd = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) < 0) {
-        fprintf (stderr," Erro ao criar socket para o servidor! \n");
-        exit (1);
+        freeaddrinfo(res);
+        throw "Erro ao criar socket para o servidor!";
     }
 
     if (connect(serverFd, res->ai_addr, res->ai_addrlen) < 0) {
-        fprintf (stderr," Erro ao conectar com o servidor ! \n");
-        exit (1);
+        freeaddrinfo(res);
+        throw "Erro ao conectar com o servidor!";
     }
 
     freeaddrinfo(res);
