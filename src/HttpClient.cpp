@@ -8,7 +8,7 @@ HttpClient::~HttpClient()
 {
 }
 
-int HttpClient::makeRequest( Request reques, bool verbose = false ) {
+int HttpClient::makeRequest( Request reques, Response resp, bool verbose = false ) {
     int sockfd, clientsockfd;
     int opt = 1;
     char buffer[MAX_BUFFER_SIZE];
@@ -33,16 +33,16 @@ int HttpClient::makeRequest( Request reques, bool verbose = false ) {
 
     if(received == -1){
         std::cerr << "Erro ao receber do servidor. \n" << std::endl;
-        exit (1); 
+        return VALOR_RETORNO::ERROR;
     }
 
     // Depois de recebido tudo, fechar conexao
 
     if (verbose)
     {
-        std::cout << "Recebido do servidor" << std::endl << reply << std::endl;
+        std::cout << "Recebido do servidor\n" << reply << std::endl;
     }
-    
-
     close(serverFd);
+    resp.makeRequest(reply);
+    return VALOR_RETORNO::SUCCES_ON_EXECUTION;
 }

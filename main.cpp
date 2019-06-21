@@ -1,4 +1,4 @@
-#include "httputils.hpp"
+#include "Request.hpp"
 #include "constants.hpp"
 #include "httpClient.hpp"
 
@@ -17,8 +17,10 @@ int main(int argc, char *argv[]){
     Request myReq(req);
     
     HttpClient httpClient;
-    
-    httpClient.makeRequest(myReq, true);
+
+    Response resp;
+
+    httpClient.makeRequest(myReq, resp, true);
 
     return 0;
 

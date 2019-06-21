@@ -5,6 +5,8 @@
 #include <netinet/in.h>
 
 #include "httputils.hpp"
+#include "Response.hpp"
+#include "Request.hpp"
 
 class HttpClient
 {
@@ -13,5 +15,5 @@ private:
 public:
     HttpClient(/* args */);
     ~HttpClient();
-    int makeRequest( Request , bool);
+    int makeRequest( Request , Response, bool);
 };

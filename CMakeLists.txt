@@ -7,10 +7,11 @@ set(CMAKE_BINARY_DIR ${PROJECT_SOURCE_DIR})
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
-add_library(httpProxy OBJECT 
-    src/httputils.cpp
+add_library(httpProxy OBJECT
     src/proxy.cpp
     src/HttpClient.cpp
+    src/Request.cpp
+    src/Response.cpp
 )
 
 add_executable( Proxy main.cpp $<TARGET_OBJECTS:httpProxy> )
