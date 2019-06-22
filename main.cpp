@@ -24,18 +24,37 @@ int main(int argc, char *argv[]){
     // {
     //     return 0;
     // }
-
-    // Request req(request);
+    int serverSock, n = 5;
+    Request req;
     HttpServer httpServer;
 
-    Request req = httpServer.openServer(4331, 1);
-    
-    // HttpClient httpClient;
+    serverSock = httpServer.openServer(4331, 1);
 
-    // Response resp;
+    while(n) {
+        try
+        {
+            req = httpServer.acceptRequest( serverSock, true);
+        }
+        catch(char const *e)
+        {
+            close(serverSock);
+            std::cerr << e << std::endl;
+        }
+        
+        HttpClient httpClient;
 
-    // httpClient.makeRequest(req, resp, true);
+        Response resp = httpClient.makeRequest(req, false);
+        if(!resp.getResponse().empty()) {
+            sendData(resp.getResponse(), req.getClientSockFd());
+        }
+        // std::cout << resp.getResponse() << std::endl;
 
+        close(req.getClientSockFd());
+        n--;
+    }
+
+
+    close(serverSock);
     return 0;
 
 //     int sockfd, clientsockfd;

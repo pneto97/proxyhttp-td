@@ -10,9 +10,12 @@ class Request{
         std::string getMethod();
         std::string getHost();
         std::string getRequest();
+        int getClientSockFd();
    //     string getHeaderFields();
-        Request(std::string req); //parse request
+        Request(std::string req, int sockfd); //parse request
+        Request();
     private:
+        int sockfd;
         std::string method;
         std::string uri;
         std::string version;

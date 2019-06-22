@@ -15,5 +15,5 @@ private:
 public:
     HttpClient(/* args */);
     ~HttpClient();
-    int makeRequest( Request , Response, bool);
+    Response makeRequest( Request, bool);
 };

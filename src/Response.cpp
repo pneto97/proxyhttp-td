@@ -2,7 +2,7 @@
 
 Response::Response( std::string response )
 {
-    this->makeRequest(response);
+    this->createResponse(response);
 }
 
 Response::Response()
@@ -13,7 +13,7 @@ Response::~Response()
 {
 }
 
-VALOR_RETORNO Response::makeRequest(std::string response) {
+VALOR_RETORNO Response::createResponse(std::string response) {
 
     this->response = response;
 

@@ -1,6 +1,8 @@
 #include "Request.hpp"
 
-Request::Request(std::string req){
+Request::Request(std::string req, int sockfd){
+    this->sockfd = sockfd;
+
     this->req = req; 
 
     std::stringstream s(req);
@@ -23,6 +25,10 @@ Request::Request(std::string req){
     }
 }
 
+Request::Request()
+{
+}
+
 std::string Request::getUri(){
     return this->uri;
 }
@@ -41,4 +47,8 @@ std::string Request::getHost(){
 
 std::string Request::getRequest(){
     return this->req;
+}
+
+int Request::getClientSockFd() {
+    return this->sockfd;
 }

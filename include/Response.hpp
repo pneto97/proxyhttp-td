@@ -19,7 +19,7 @@ public:
     Response( );
     ~Response();
 
-    VALOR_RETORNO makeRequest(std::string);
+    VALOR_RETORNO createResponse(std::string);
     std::string getResponse();
     std::string getProtocol();
     std::string getResponseCode();

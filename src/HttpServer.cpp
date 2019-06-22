@@ -8,19 +8,10 @@ HttpServer::~HttpServer()
 {
 }
 
-Request HttpServer::openServer(short portNumber, short numberOfParalelConnections) {
+int HttpServer::openServer(short portNumber, short numberOfParalelConnections) {
 
-    int sockfd, clientsockfd;
-    int clilen = sizeof(struct sockaddr);
-    int opt = 1;
-    char buffer[MAX_BUFFER_SIZE];
-    std::string request = "";
-    std::string reply = "";
-
-
+    int sockfd;
     struct sockaddr_in serv_addr;
-    struct sockaddr cli_addr;
-
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0); //cria o socket
 
@@ -51,10 +42,22 @@ Request HttpServer::openServer(short portNumber, short numberOfParalelConnection
         throw "Erro no listen";
     }
 
-    clientsockfd = accept(sockfd, &cli_addr, (socklen_t*) &clilen);
+    return sockfd;
+}
+
+Request HttpServer::acceptRequest( int sock, bool verbose = false ) {
+    struct sockaddr cli_addr;
+    int clilen = sizeof(struct sockaddr);
+
+    char buffer[MAX_BUFFER_SIZE];
+    std::string request = "";
+
+    int clientsockfd;
+
+    clientsockfd = accept(sock, &cli_addr, (socklen_t*) &clilen);
 
     if(clientsockfd < 0){
-        close(sockfd);
+        close(sock);
         throw "Erro ao aceitar o request";
     }
 
@@ -68,7 +71,8 @@ Request HttpServer::openServer(short portNumber, short numberOfParalelConnection
         recvd = recv(clientsockfd, buffer , MAX_BUFFER_SIZE, 0);
 
         if(recvd < 0) {
-            close(sockfd);
+            close(clientsockfd);
+            close(sock);
             throw "Erro ao receber requisicao"; 
         } else if ( recvd == 0) {
             break;
@@ -77,8 +81,10 @@ Request HttpServer::openServer(short portNumber, short numberOfParalelConnection
         buffer[recvd] = '\0';
         request.append(buffer);
     }
-    close(clientsockfd);
-    std::cout << request << std::endl;
 
-    return Request(request);
+    if (verbose){
+        std::cout << request << std::endl;
+    }
+
+    return Request(request, clientsockfd);
 }

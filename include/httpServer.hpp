@@ -18,5 +18,6 @@ public:
     HttpServer(/* args */);
     ~HttpServer();
 
-    Request openServer( short portNumber, short numberOfParalelConnections );
+    int openServer( short portNumber, short numberOfParalelConnections );
+    Request acceptRequest( int sock, bool verbose );
 };

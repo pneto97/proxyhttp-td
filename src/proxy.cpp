@@ -7,7 +7,7 @@ int initServerSocket(string host){
 
     int serverFd;
     struct addrinfo hints, *res;
-    int https = 0;
+    // int https = 0;
     //string porta = "80";
     //const char* port = "80";
     //const char*portHttps = "443";
@@ -26,10 +26,11 @@ int initServerSocket(string host){
 
 
     memset(&hints,0,sizeof(hints));
-    hints.ai_family = AF_UNSPEC;
+    hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;
 
-    
+    std::cout << host << "|abcd" << std::endl;
     if (getaddrinfo(host.c_str(), port, &hints, &res) != 0) {
     //if (getaddrinfo("linuxhowtos.org", porta, &hints, &res) != 0) {
         throw "Erro ao tentar buscar informações sobre o servidor!";
@@ -41,6 +42,7 @@ int initServerSocket(string host){
     }
 
     if (connect(serverFd, res->ai_addr, res->ai_addrlen) < 0) {
+        close(serverFd);
         freeaddrinfo(res);
         throw "Erro ao conectar com o servidor!";
     }
@@ -58,7 +60,8 @@ int sendData(string data, int sock){
         int sentTotal = 0;
         //char sendBuf[MAX_BUFFER_SIZE];
         char* sendBuf = (char*) malloc((sendSize+1)*sizeof(char)); 
-        memset(sendBuf, 0 , sizeof(sendBuf));
+        // memset(sendBuf, 0 , sizeof(sendBuf));
+        sendBuf[sendSize] = '\0';
         strcpy(sendBuf, data.c_str());
         
         //string a(sendBuf);
@@ -67,10 +70,10 @@ int sendData(string data, int sock){
             int sent = 0;
             if((sent = send(sock, (void*) (sendBuf + sentTotal), sendSize - sentTotal,0)) <0){
                 
-                std::cerr << "Erro ao enviar ao servidor!\nFechando Socket" << std::endl;
+                std::cerr << "Erro ao enviar ao/para servidor/cliente!\nFechando Socket" << std::endl;
                 close(sock);
                 free(sendBuf);
-                exit(1);
+                return -1;
             }
 
             sentTotal = sentTotal + sent;
