@@ -10,7 +10,7 @@ void executeTask(int serverSock, HttpServer *httpServer){
 
     try
         {
-            req = httpServer->acceptRequest( serverSock, true);
+            req = httpServer->acceptRequest( serverSock, false);
         }
         catch(char const *e)
         {
@@ -20,9 +20,9 @@ void executeTask(int serverSock, HttpServer *httpServer){
         
         HttpClient httpClient;
 
-        Response resp = httpClient.makeRequest(req, false);
-        if(!resp.getResponse().empty()) {
-            sendData(resp.getResponse(), req.getClientSockFd());
+        Response resp = httpClient.makeRequest(req, true);
+        if(!resp.getBinaryResponse().empty()) {
+            sendDataChar(resp.getBinaryResponse().data(), resp.getBinaryResponse().size(), req.getClientSockFd());
         }
         // std::cout << resp.getResponse() << std::endl;
 
@@ -49,10 +49,10 @@ int main(int argc, char *argv[]){
     // {
     //     return 0;
     // }
-    int serverSock, n = 2;
+    int serverSock, n = 3;
     HttpServer httpServer;
 
-    serverSock = httpServer.openServer(4331, 1);
+    serverSock = httpServer.openServer(4331, 5);
 
     while(n) {
         std::thread s1 (executeTask, serverSock, &httpServer);

@@ -1,5 +1,5 @@
 #pragma once
-
+#include <vector>
 #include <string>
 #include <sstream>
 #include "constants.hpp"
@@ -8,6 +8,7 @@ class Response
 {
 private:
     /* data */
+    std::vector<char> binaryResponse;
     std::string response;
     std::string protocol;
     std::string reponseCode;
@@ -20,7 +21,9 @@ public:
     ~Response();
 
     VALOR_RETORNO createResponse(std::string);
+    VALOR_RETORNO createResponse(std::vector<char>);
     std::string getResponse();
+    std::vector<char> getBinaryResponse();
     std::string getProtocol();
     std::string getResponseCode();
     std::string getMessageReponse();

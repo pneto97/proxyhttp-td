@@ -13,6 +13,10 @@ Response::~Response()
 {
 }
 
+VALOR_RETORNO Response::createResponse(std::vector<char> response) {
+    this->binaryResponse = response;
+}
+
 VALOR_RETORNO Response::createResponse(std::string response) {
 
     this->response = response;
@@ -46,4 +50,8 @@ std::string Response::getResponseCode() {
 
 std::string Response::getMessageReponse() {
     return this->messageReponse;
+}
+
+std::vector<char> Response::getBinaryResponse() {
+    return this->binaryResponse;
 }

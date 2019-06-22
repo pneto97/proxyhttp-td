@@ -28,14 +28,14 @@ Response HttpClient::makeRequest( Request reques, bool verbose = false ) {
 
     ssize_t received = 0;
     char recvBuf[MAX_BUFFER_SIZE];
-    std::string reply;
+    std::vector<char> reply;
 
     while((received = recv(serverFd, recvBuf, MAX_BUFFER_SIZE, 0)) > 0 ) {
         recvBuf[received] = '\0';
-        reply.append(recvBuf);
+        reply.insert(reply.end(), recvBuf, recvBuf + received);
         //   fputs(recvBuf,stdout);
         // sendDataChar(recvBuf, received, clientsockfd );
-        memset(recvBuf, 0 , sizeof(recvBuf));
+        // memset(recvBuf, 0 , sizeof(recvBuf));
     }
 
     if(received == -1){

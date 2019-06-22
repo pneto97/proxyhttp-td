@@ -1,5 +1,6 @@
 #include <sys/socket.h>
 #include <iostream>
+#include <vector>
 #include <sys/socket.h>
 #include "constants.hpp"
 #include <netinet/in.h>

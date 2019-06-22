@@ -87,7 +87,7 @@ int sendDataChar(char* data, int size, int sock){
         int sentTotal = 0;
         //char sendBuf[MAX_BUFFER_SIZE];
         char* sendBuf = (char*) malloc((size+1)*sizeof(char)); 
-        memset(sendBuf, 0 , sizeof(sendBuf));
+        // memset(sendBuf, 0 , sizeof(sendBuf));
         memcpy(sendBuf,data,size);
         //strcpy(sendBuf,data.c_str());
         
@@ -96,9 +96,8 @@ int sendDataChar(char* data, int size, int sock){
         while(sentTotal < size){
             int sent = 0;
             if((sent = send(sock, (void*) (sendBuf + sentTotal), size - sentTotal,0)) < 0){
-                
-                fprintf(stderr,"Erro ao enviar ao servidor!\n");
-                exit(1);
+                std::cerr << "Erro ao enviar ao servidor!" << std::endl;
+                return -1;
             }
 
             sentTotal = sentTotal + sent;
