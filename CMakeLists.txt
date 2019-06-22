@@ -4,7 +4,7 @@ project( TD CXX C)
 set(CMAKE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_BINARY_DIR ${PROJECT_SOURCE_DIR})
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic -lpthread -pthread")
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 

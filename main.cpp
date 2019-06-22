@@ -3,6 +3,31 @@
 #include "httpClient.hpp"
 #include "httpServer.hpp"
 #include <fstream>
+#include <thread>
+
+void executeTask(int serverSock, HttpServer *httpServer){
+    Request req;
+
+    try
+        {
+            req = httpServer->acceptRequest( serverSock, true);
+        }
+        catch(char const *e)
+        {
+            close(serverSock);
+            std::cerr << e << std::endl;
+        }
+        
+        HttpClient httpClient;
+
+        Response resp = httpClient.makeRequest(req, false);
+        if(!resp.getResponse().empty()) {
+            sendData(resp.getResponse(), req.getClientSockFd());
+        }
+        // std::cout << resp.getResponse() << std::endl;
+
+        close(req.getClientSockFd());
+}
 
 int main(int argc, char *argv[]){
 
@@ -24,35 +49,19 @@ int main(int argc, char *argv[]){
     // {
     //     return 0;
     // }
-    int serverSock, n = 5;
-    Request req;
+    int serverSock, n = 2;
     HttpServer httpServer;
 
     serverSock = httpServer.openServer(4331, 1);
 
     while(n) {
-        try
-        {
-            req = httpServer.acceptRequest( serverSock, true);
-        }
-        catch(char const *e)
-        {
-            close(serverSock);
-            std::cerr << e << std::endl;
-        }
+        std::thread s1 (executeTask, serverSock, &httpServer);
+        std::thread s2 (executeTask, serverSock, &httpServer);
         
-        HttpClient httpClient;
-
-        Response resp = httpClient.makeRequest(req, false);
-        if(!resp.getResponse().empty()) {
-            sendData(resp.getResponse(), req.getClientSockFd());
-        }
-        // std::cout << resp.getResponse() << std::endl;
-
-        close(req.getClientSockFd());
+        s1.join();
+        s2.join();
         n--;
     }
-
 
     close(serverSock);
     return 0;
