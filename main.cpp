@@ -1,26 +1,40 @@
 #include "Request.hpp"
 #include "constants.hpp"
 #include "httpClient.hpp"
+#include "httpServer.hpp"
+#include <fstream>
 
 int main(int argc, char *argv[]){
 
-    std::string req = "GET / HTTP/1.1\r\n";
-    req += "Host: www.indexof123.com\r\n";
-    req += "Connection: keep-alive\r\n";
-    req += "Upgrade-Insecure-Requests: 1\r\n";
-    req += "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36\r\n";
-    req += "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3\r\n";
-    req += "Accept-Encoding: gzip, deflate\r\n";
-    req += "Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7\r\n";
-    req += "Cookie: _ga=GA1.3.427403873.1544050820\r\n\r\n";
+    // std::string request;
 
-    Request myReq(req);
+    // std::ifstream requestExample ("../RequestExample.txt");
+
+    // if( requestExample.is_open() ){
+    //     std::stringstream temp;
+    //     temp << requestExample.rdbuf();
+    //     request = temp.str();
+    // }
+    // requestExample.close();
+
+    // std::cout << request << "Proceed? 0 - NO, 1 - Yes" << std::endl;
+    // int val;
+    // std::cin >> val;
+    // if (val == 0)
+    // {
+    //     return 0;
+    // }
+
+    // Request req(request);
+    HttpServer httpServer;
+
+    Request req = httpServer.openServer(4331, 1);
     
-    HttpClient httpClient;
+    // HttpClient httpClient;
 
-    Response resp;
+    // Response resp;
 
-    httpClient.makeRequest(myReq, resp, true);
+    // httpClient.makeRequest(req, resp, true);
 
     return 0;
 

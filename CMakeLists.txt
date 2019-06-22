@@ -10,6 +10,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 add_library(httpProxy OBJECT
     src/proxy.cpp
     src/HttpClient.cpp
+    src/HttpServer.cpp
     src/Request.cpp
     src/Response.cpp
 )
