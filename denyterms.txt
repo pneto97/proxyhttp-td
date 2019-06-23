@@ -1,0 +1,4 @@
+pulga
+torta
+batata
+*Gentoo

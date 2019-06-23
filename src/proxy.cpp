@@ -105,3 +105,38 @@ int sendDataChar(char* data, int size, int sock){
         return sentTotal;
 }
 
+bool findDenyTerms(Response resp, std::vector<std::string>& denyterms ){
+
+    std::string respString = "";
+    for(int i = 0 ; i < resp.getBinaryResponse().size() ; i++){
+
+        respString.push_back(resp.getBinaryResponse()[i]);
+    }
+    //procura deny terms
+    for(std::vector<std::string>::iterator it = denyterms.begin() ; it != denyterms.end() ; it++){
+        if(respString.find(*it) != std::string::npos){
+            //deny term encontrado
+            //sendErrorToClient(req, "../response_errors/ReponseErrorUnauthorizedDeny.txt");
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void sendErrorToClient(Request req, std::string page){
+
+    std::string request;
+        std::ifstream requestExample (page);
+
+        if( requestExample.is_open() ){
+            std::stringstream temp;
+            temp << requestExample.rdbuf();
+            request = temp.str();
+            sendData(request, req.getClientSockFd());
+        } else {
+            std::cout << "Mate, this is impossible to fix" << std::endl;
+        }
+        requestExample.close();
+}
+

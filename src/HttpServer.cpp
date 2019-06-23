@@ -11,6 +11,7 @@ HttpServer::~HttpServer()
 int HttpServer::openServer(short portNumber, short numberOfParalelConnections) {
 
     int sockfd;
+    int opt=1;
     struct sockaddr_in serv_addr;
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0); //cria o socket
@@ -20,11 +21,11 @@ int HttpServer::openServer(short portNumber, short numberOfParalelConnections) {
     }
 
     // Set the socket options
-	// if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
-	// 	&opt, sizeof(opt))) {
+	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
+		&opt, sizeof(opt))) {
 
-    //     fprintf(stderr,"Erro na configuracao do socket\n");
-	// }
+        fprintf(stderr,"Erro na configuracao do socket\n");
+	}
 
     memset(&serv_addr , 0 , sizeof(serv_addr));
 

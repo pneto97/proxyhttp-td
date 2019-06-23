@@ -20,9 +20,17 @@
 #include <sstream>
 
 #include "constants.hpp"
+#include "Request.hpp"
+#include "Response.hpp"
+#include <vector>
+#include <fstream>
 
 int initServerSocket(std::string host);
 
 int sendData(std::string data, int sock);
 
 int sendDataChar(char* data, int size, int sock);
+
+void sendErrorToClient(Request req, std::string page);
+
+bool findDenyTerms(Response resp, std::vector<std::string>& denyterms );

@@ -4,9 +4,37 @@
 #include "httpServer.hpp"
 #include <fstream>
 #include <thread>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include "httputils.hpp"
+
+void fileToVector(std::vector<std::string>& vec, std::string fileName){
+
+    std::string curLine = "";
+
+    std::ifstream infile(fileName);
+
+    while(std::getline(infile, curLine)){
+        if(curLine != "\n")
+            vec.push_back(curLine);
+    }
+
+}
 
 void executeTask(int serverSock, HttpServer *httpServer){
     Request req;
+
+    std::vector<std::string> whitelist;
+    std::vector<std::string> blacklist;
+    std::vector<std::string> denyterms;
+    bool whitelisted = false;
+    bool blacklisted = false;
+    //bool hasDenyTerms = false;
+
+    fileToVector(whitelist , "../whitelist.txt");
+    fileToVector(blacklist , "../blacklist.txt");
+    fileToVector(denyterms , "../denyterms.txt");
 
     try
     {
@@ -18,24 +46,41 @@ void executeTask(int serverSock, HttpServer *httpServer){
         std::cerr << e << std::endl;
     }
 
+    if(std::find(whitelist.begin(), whitelist.end(), req.getHost()) != whitelist.end()){
+        whitelisted = true;
+    }
+
+    if(std::find(blacklist.begin(), blacklist.end(), req.getHost()) != blacklist.end()){
+        blacklisted = true;
+
+        std::cout << "This website is blacklisted" << std::endl;
+
+        sendErrorToClient(req, "../response_errors/ReponseErrorUnauthorized.txt");
+
+        exit(1);
+    }
+
     HttpClient httpClient;
 
     Response resp = httpClient.makeRequest(req, -1, false);
+
+
     if (!resp.getBinaryResponse().empty()) {
+
+        if(whitelisted == false){
+            printf("Não está no whitelist\n");
+
+            if(findDenyTerms(resp, denyterms)){
+                sendErrorToClient(req, "../response_errors/ReponseErrorUnauthorizedDeny.txt");
+                printf("Deny term encontrado.\n");
+                exit(1);
+            }     
+        }
+
+
         sendDataChar(resp.getBinaryResponse().data(), resp.getBinaryResponse().size(), req.getClientSockFd());
     } else {
-        std::string request;
-        std::ifstream requestExample ("../ReponseErrorExample.txt");
-
-        if( requestExample.is_open() ){
-            std::stringstream temp;
-            temp << requestExample.rdbuf();
-            request = temp.str();
-            sendData(request, req.getClientSockFd());
-        } else {
-            std::cout << "Mate, this is impossible to fix" << std::endl;
-        }
-        requestExample.close();
+         sendErrorToClient(req, "../response_errors/ReponseErrorNotFound.txt"); 
     }
 
     bool cont = req.isPersistentConnection();
@@ -43,24 +88,41 @@ void executeTask(int serverSock, HttpServer *httpServer){
     while ( cont ) {
         try {
             req = httpServer->recvFromPrevious ( req.getClientSockFd(), true );
+
+            if(std::find(whitelist.begin(), whitelist.end(), req.getHost()) != whitelist.end()){
+                whitelisted = true;
+            }
+
+            if(std::find(blacklist.begin(), blacklist.end(), req.getHost()) != blacklist.end()){
+                blacklisted = true;
+
+                std::cout << "This website is blacklisted" << std::endl;
+
+                sendErrorToClient(req, "../response_errors/ReponseErrorUnauthorized.txt");
+
+                exit(1);
+            }
+
+
             if (req.getRequest().empty()) break;
 
             resp = httpClient.makeRequest(req, resp.getServerFd(), false);
             if (!resp.getBinaryResponse().empty()) {
+
+                if(whitelisted == false){
+                    printf("Não está no whitelist\n");
+
+                    if(findDenyTerms(resp, denyterms)){
+                        sendErrorToClient(req, "../response_errors/ReponseErrorUnauthorizedDeny.txt");
+                        printf("Deny term encontrado.\n");
+                        exit(1);
+                    }     
+                }
+
                 sendDataChar(resp.getBinaryResponse().data(), resp.getBinaryResponse().size(), req.getClientSockFd());
             } else {
-                std::string request;
-                std::ifstream requestExample ("../ReponseErrorExample.txt");
-
-                if( requestExample.is_open() ){
-                    std::stringstream temp;
-                    temp << requestExample.rdbuf();
-                    request = temp.str();
-                    sendData(request, req.getClientSockFd());
-                } else {
-                    std::cout << "Mate, this is impossible to fix" << std::endl;
-                }
-                requestExample.close();
+                
+                sendErrorToClient(req, "../response_errors/ReponseErrorNotFound.txt");         
             }
         } catch(char const *e) {
             cont = false;
