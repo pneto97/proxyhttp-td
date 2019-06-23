@@ -3,7 +3,14 @@
 Request::Request(std::string req, int sockfd){
     this->sockfd = sockfd;
 
-    this->req = req; 
+    this->req = req;
+
+    std::string temp = "Connection: keep-alive";
+    std::string temp2 = "Connection: close";
+
+    size_t start_pos = this->req.find(temp);
+    if(start_pos != std::string::npos)
+        this->req.replace(start_pos, temp.length(), temp2);
 
     std::stringstream s(req);
     std::string word;
