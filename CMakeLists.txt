@@ -14,6 +14,7 @@ add_library(httpProxy OBJECT
     src/HttpServer.cpp
     src/Request.cpp
     src/Response.cpp
+    src/Cache.cpp
 )
 
 add_executable( Proxy main.cpp $<TARGET_OBJECTS:httpProxy> )

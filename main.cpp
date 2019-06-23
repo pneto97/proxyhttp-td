@@ -10,7 +10,7 @@ void executeTask(int serverSock, HttpServer *httpServer){
 
     try
     {
-        req = httpServer->acceptRequest( serverSock, true);
+        req = httpServer->acceptRequest( serverSock, false);
     }
     catch(char const *e)
     {
@@ -20,7 +20,7 @@ void executeTask(int serverSock, HttpServer *httpServer){
 
     HttpClient httpClient;
 
-    Response resp = httpClient.makeRequest(req, -1, true);
+    Response resp = httpClient.makeRequest(req, -1, false);
     if (!resp.getBinaryResponse().empty()) {
         sendDataChar(resp.getBinaryResponse().data(), resp.getBinaryResponse().size(), req.getClientSockFd());
     } else {
@@ -42,7 +42,7 @@ void executeTask(int serverSock, HttpServer *httpServer){
     // Que codigo feio, jesus santo
     while ( cont ) {
         try {
-            req = httpServer->recvFromPrevious ( req.getClientSockFd(), true );
+            req = httpServer->recvFromPrevious ( req.getClientSockFd(), false );
             if (req.getRequest().empty()) break;
 
             resp = httpClient.makeRequest(req, resp.getServerFd(), false);
@@ -69,7 +69,7 @@ void executeTask(int serverSock, HttpServer *httpServer){
     }
 
     if (!resp.getBinaryResponse().empty()) close (resp.getServerFd());
-    if (req.getRequest().empty()) close( req.getClientSockFd() );
+    if (!req.getRequest().empty()) close( req.getClientSockFd() );
     std::cout << "Terminou thread" << std::endl;
 }
 

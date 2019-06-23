@@ -10,8 +10,14 @@ HttpClient::~HttpClient()
 
 Response HttpClient::makeRequest( Request reques, int sock , bool verbose ) {
     int serverFd;
+    std::vector<char> reply;
     Response resp;
+    Cache cache;
 
+    resp = cache.getFromCache(reques);
+    if (!resp.getBinaryResponse().empty()) {
+        return resp;
+    }
     // Abrir socket para realizar a requisicao
     try {
         serverFd = initServerSocket(reques.getHost());
@@ -25,7 +31,6 @@ Response HttpClient::makeRequest( Request reques, int sock , bool verbose ) {
 
     ssize_t received = 0;
     char recvBuf[MAX_BUFFER_SIZE];
-    std::vector<char> reply;
 
     while((received = recv(serverFd, recvBuf, MAX_BUFFER_SIZE, 0)) > 0 ) {
         recvBuf[received] = '\0';
@@ -45,8 +50,19 @@ Response HttpClient::makeRequest( Request reques, int sock , bool verbose ) {
     resp.createResponse(reply, serverFd);
     if (verbose)
     {
-        std::cout << "Recebido do servidor\n" << resp.getResponse() << std::endl;
+        std::cout << "Recebido do servidor" << std::endl;
+        for (auto i : resp.getBinaryResponse())
+        {
+            std::cout << i;
+        }
+        
     }
+
+    if (cache.lancarNaCache(resp, reques) == VALOR_RETORNO::ERROR)
+    {
+        std::cerr << "Erro ao escrever na cache. \n" << std::endl;
+    }
+    
     close(serverFd);
     return resp;
 }

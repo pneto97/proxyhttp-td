@@ -49,6 +49,14 @@ std::string Request::getRequest(){
     return this->req;
 }
 
+std::string Request::getFileRequestSemBarra() {
+    std::string temp = "";
+    temp += this->uri;
+    std::replace (temp.begin(), temp.end(), '/' , '-');
+    std::replace (temp.begin(), temp.end(), ':' , '-');
+    return temp;
+}
+
 int Request::getClientSockFd() {
     return this->sockfd;
 }

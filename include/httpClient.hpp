@@ -8,6 +8,7 @@
 #include "httputils.hpp"
 #include "Response.hpp"
 #include "Request.hpp"
+#include "cache.hpp"
 
 class HttpClient
 {
