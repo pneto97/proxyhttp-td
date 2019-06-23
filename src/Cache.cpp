@@ -45,6 +45,7 @@ Response Cache::getFromCache(Request req) {
 }
 
 VALOR_RETORNO Cache::lancarNaCache(Response resp, Request req) {
+    std::cout << resp.getResponseCode() << std::endl;
     if (resp.getResponseCode() != "200")
     {
         return VALOR_RETORNO::SUCCES_ON_EXECUTION;
