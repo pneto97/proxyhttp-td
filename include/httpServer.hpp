@@ -20,4 +20,5 @@ public:
 
     int openServer( short portNumber, short numberOfParalelConnections );
     Request acceptRequest( int sock, bool verbose );
+    Request recvFromPrevious ( int sock, bool verbose );
 };

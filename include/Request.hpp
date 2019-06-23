@@ -10,6 +10,7 @@ class Request{
         std::string getMethod();
         std::string getHost();
         std::string getRequest();
+        bool isPersistentConnection();
         int getClientSockFd();
    //     string getHeaderFields();
         Request(std::string req, int sockfd); //parse request

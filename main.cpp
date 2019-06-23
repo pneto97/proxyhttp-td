@@ -9,24 +9,66 @@ void executeTask(int serverSock, HttpServer *httpServer){
     Request req;
 
     try
-        {
-            req = httpServer->acceptRequest( serverSock, false);
+    {
+        req = httpServer->acceptRequest( serverSock, false);
+    }
+    catch(char const *e)
+    {
+        close(serverSock);
+        std::cerr << e << std::endl;
+    }
+
+    HttpClient httpClient;
+
+    Response resp = httpClient.makeRequest(req, false);
+    if (!resp.getBinaryResponse().empty()) {
+        sendDataChar(resp.getBinaryResponse().data(), resp.getBinaryResponse().size(), req.getClientSockFd());
+    } else {
+        std::string request;
+        std::ifstream requestExample ("../ReponseErrorExample.txt");
+
+        if( requestExample.is_open() ){
+            std::stringstream temp;
+            temp << requestExample.rdbuf();
+            request = temp.str();
+            sendData(request, req.getClientSockFd());
+        } else {
+            std::cout << "Mate, this is impossible to fix" << std::endl;
         }
-        catch(char const *e)
-        {
-            close(serverSock);
+        requestExample.close();
+    }
+
+    bool cont = req.isPersistentConnection();
+    // Que codigo feio
+    while ( cont ) {
+        try {
+            req = httpServer->recvFromPrevious ( req.getClientSockFd(), true );
+            if (req.getRequest().empty()) break;
+
+            Response resp = httpClient.makeRequest(req, false);
+            if (!resp.getBinaryResponse().empty()) {
+                sendDataChar(resp.getBinaryResponse().data(), resp.getBinaryResponse().size(), req.getClientSockFd());
+            } else {
+                std::string request;
+                std::ifstream requestExample ("../ReponseErrorExample.txt");
+
+                if( requestExample.is_open() ){
+                    std::stringstream temp;
+                    temp << requestExample.rdbuf();
+                    request = temp.str();
+                    sendData(request, req.getClientSockFd());
+                } else {
+                    std::cout << "Mate, this is impossible to fix" << std::endl;
+                }
+                requestExample.close();
+            }
+        } catch(char const *e) {
+            cont = false;
             std::cerr << e << std::endl;
         }
-        
-        HttpClient httpClient;
-
-        Response resp = httpClient.makeRequest(req, true);
-        if(!resp.getBinaryResponse().empty()) {
-            sendDataChar(resp.getBinaryResponse().data(), resp.getBinaryResponse().size(), req.getClientSockFd());
-        }
-        // std::cout << resp.getResponse() << std::endl;
-
-        close(req.getClientSockFd());
+    }
+    
+    close( req.getClientSockFd() );
 }
 
 int main(int argc, char *argv[]){
@@ -49,17 +91,34 @@ int main(int argc, char *argv[]){
     // {
     //     return 0;
     // }
-    int serverSock, n = 3;
+    int serverSock, n = 5;
     HttpServer httpServer;
 
-    serverSock = httpServer.openServer(4331, 5);
+    serverSock = httpServer.openServer(4331, 10);
 
     while(n) {
         std::thread s1 (executeTask, serverSock, &httpServer);
         std::thread s2 (executeTask, serverSock, &httpServer);
-        
+        // std::thread s3 (executeTask, serverSock, &httpServer);
+        // std::thread s4 (executeTask, serverSock, &httpServer);
+        // std::thread s5 (executeTask, serverSock, &httpServer);
+        // std::thread s6 (executeTask, serverSock, &httpServer);
+        // std::thread s7 (executeTask, serverSock, &httpServer);
+        // std::thread s8 (executeTask, serverSock, &httpServer);
+        // std::thread s9 (executeTask, serverSock, &httpServer);
+        // std::thread s10 (executeTask, serverSock, &httpServer);
+
         s1.join();
         s2.join();
+        // s3.join();
+        // s4.join();
+        // s5.join();
+        // s6.join();
+        // s7.join();
+        // s8.join();
+        // s9.join();
+        // s10.join();
+
         n--;
     }
 

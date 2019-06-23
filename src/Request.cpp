@@ -52,3 +52,7 @@ std::string Request::getRequest(){
 int Request::getClientSockFd() {
     return this->sockfd;
 }
+
+bool Request::isPersistentConnection() {
+    return this->req.find("Connection: keep-alive") != this->req.npos;
+}

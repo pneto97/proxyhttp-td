@@ -66,7 +66,7 @@ Request HttpServer::acceptRequest( int sock, bool verbose = false ) {
     // Melhorar a condicao desse loop
     while( request.find("\r\n\r\n") == std::string::npos ){
         
-        memset(buffer, 0 , sizeof(buffer));
+        memset(buffer, 0 , MAX_BUFFER_SIZE);
 
         recvd = recv(clientsockfd, buffer , MAX_BUFFER_SIZE, 0);
 
@@ -87,4 +87,34 @@ Request HttpServer::acceptRequest( int sock, bool verbose = false ) {
     }
 
     return Request(request, clientsockfd);
+}
+
+Request HttpServer::recvFromPrevious ( int sock, bool verbose ) {
+    std::string request = "";
+    char buffer[MAX_BUFFER_SIZE];
+
+    int recvd;
+
+    // Melhorar a condicao desse loop
+    while( request.find("\r\n\r\n") == std::string::npos ){
+        
+        memset(buffer, 0 , sizeof(buffer));
+
+        recvd = recv(sock, buffer , MAX_BUFFER_SIZE, 0);
+
+        if(recvd < 0) {
+            throw "Erro ao receber requisicao"; 
+        } else if ( recvd == 0) {
+            break;
+        }
+
+        buffer[recvd] = '\0';
+        request.append(buffer);
+    }
+
+    if (verbose){
+        std::cout << "Received in the same connection\n" << request << std::endl;
+    }
+
+    return Request(request, sock);
 }
