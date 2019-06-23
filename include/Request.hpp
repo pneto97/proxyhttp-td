@@ -2,7 +2,6 @@
 
 #include <string>
 #include <sstream>
-#include <algorithm>
 
 class Request{
     public:
@@ -11,7 +10,6 @@ class Request{
         std::string getMethod();
         std::string getHost();
         std::string getRequest();
-        std::string getFileRequestSemBarra();
         bool isPersistentConnection();
         int getClientSockFd();
    //     string getHeaderFields();

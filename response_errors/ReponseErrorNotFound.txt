@@ -3,5 +3,5 @@
 <title>404 Not Found</title>
 </head><body>
 <h1>Not Found</h1>
-<p>Deu ruim tio.</p>
+<p>Page not found.</p>
 </body></html>

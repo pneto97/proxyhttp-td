@@ -15,8 +15,6 @@ Response::~Response()
 
 VALOR_RETORNO Response::createResponse(std::vector<char> response, int sock) {
     this->binaryResponse = response;
-    std::string temp (this->binaryResponse.begin(), this->binaryResponse.end());
-    this->createResponse(temp, sock);
     this->serverFd = sock;
     return VALOR_RETORNO::SUCCES_ON_EXECUTION;
 }
