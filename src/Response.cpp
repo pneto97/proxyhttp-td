@@ -1,8 +1,8 @@
 #include "Response.hpp"
 
-Response::Response( std::string response )
+Response::Response( std::string response, int sock )
 {
-    this->createResponse(response);
+    this->createResponse(response, sock);
 }
 
 Response::Response()
@@ -13,13 +13,16 @@ Response::~Response()
 {
 }
 
-VALOR_RETORNO Response::createResponse(std::vector<char> response) {
+VALOR_RETORNO Response::createResponse(std::vector<char> response, int sock) {
     this->binaryResponse = response;
+    this->serverFd = sock;
+    return VALOR_RETORNO::SUCCES_ON_EXECUTION;
 }
 
-VALOR_RETORNO Response::createResponse(std::string response) {
+VALOR_RETORNO Response::createResponse(std::string response, int sock) {
 
     this->response = response;
+    this->serverFd = sock;
 
     std::stringstream s(response);
     std::string word;
@@ -54,4 +57,8 @@ std::string Response::getMessageReponse() {
 
 std::vector<char> Response::getBinaryResponse() {
     return this->binaryResponse;
+}
+
+int Response::getServerFd() {
+    return this->serverFd;
 }

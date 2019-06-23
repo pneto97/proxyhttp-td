@@ -69,7 +69,6 @@ int sendData(string data, int sock){
         while(sentTotal < sendSize){
             int sent = 0;
             if((sent = send(sock, (void*) (sendBuf + sentTotal), sendSize - sentTotal,0)) <0){
-                
                 std::cerr << "Erro ao enviar ao/para servidor/cliente!\nFechando Socket" << std::endl;
                 close(sock);
                 free(sendBuf);

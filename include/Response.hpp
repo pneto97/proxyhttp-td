@@ -8,6 +8,7 @@ class Response
 {
 private:
     /* data */
+    int serverFd;
     std::vector<char> binaryResponse;
     std::string response;
     std::string protocol;
@@ -16,15 +17,16 @@ private:
     // std::string ;
     // std::string protocol;
 public:
-    Response( std::string );
+    Response( std::string , int);
     Response( );
     ~Response();
 
-    VALOR_RETORNO createResponse(std::string);
-    VALOR_RETORNO createResponse(std::vector<char>);
+    VALOR_RETORNO createResponse(std::string, int);
+    VALOR_RETORNO createResponse(std::vector<char>, int);
     std::string getResponse();
     std::vector<char> getBinaryResponse();
     std::string getProtocol();
     std::string getResponseCode();
     std::string getMessageReponse();
+    int getServerFd();
 };

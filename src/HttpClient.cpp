@@ -8,20 +8,17 @@ HttpClient::~HttpClient()
 {
 }
 
-Response HttpClient::makeRequest( Request reques, bool verbose = false ) {
+Response HttpClient::makeRequest( Request reques, int sock , bool verbose ) {
     int serverFd;
     Response resp;
 
     // Abrir socket para realizar a requisicao
-    try
-    {
+    try {
         serverFd = initServerSocket(reques.getHost());
-    }
-    catch( char const *e )
-    {
+    } catch( char const *e ) {
         std::cerr << e << '\n';
         return resp;
-    }
+    }        
 
     // Enviar requisicao ao servidor
     sendData(reques.getRequest(), serverFd);
@@ -45,7 +42,7 @@ Response HttpClient::makeRequest( Request reques, bool verbose = false ) {
 
     // Depois de recebido tudo, fechar conexao
 
-    resp.createResponse(reply);
+    resp.createResponse(reply, serverFd);
     if (verbose)
     {
         std::cout << "Recebido do servidor\n" << resp.getResponse() << std::endl;
